@@ -1,4 +1,7 @@
 import { useRef, useState, useEffect } from 'react'
+import { HomeIcon, DocumentAddIcon, ViewBoardsIcon } from "@heroicons/react/outline"
+import Link from 'next/link'
+
 
 function sidebar({
   sidebarOpen,
@@ -47,39 +50,30 @@ function sidebar({
           </div>
           {/* links */}
           <div className="space-y-8">
-              <div>
-                <h3 className="text-xs uppercase text-gray-500 font-semibold pl-3">
-                <span className="hidden lg:block lg:sidebar-expanded:hidden 2xl:hidden text-center w-6" aria-hidden="true">•••</span>
-                <span className="lg:hidden lg:sidebar-expanded:block 2xl:block">Pages</span>
-                </h3>
-                <ul className="mt-3">
-                {/* Dashboard */}
-                  <li className={`px-3 py-2 rounded-sm mb-0.5 last:mb-0`}>
-                    <div className={`block text-gray-200 hover:text-white truncate transition duration-150`}>
-                      <div className="flex items-center">
-                        <svg className="shrink-0 h-6 w-6" viewBox="0 0 24 24">
-                          <path className={`fill-current text-gray-400 `} d="M12 0C5.383 0 0 5.383 0 12s5.383 12 12 12 12-5.383 12-12S18.617 0 12 0z" />
-                          <path className={`fill-current text-gray-600 `} d="M12 3c-4.963 0-9 4.037-9 9s4.037 9 9 9 9-4.037 9-9-4.037-9-9-9z" />
-                          <path className={`fill-current text-gray-400 `} d="M12 15c-1.654 0-3-1.346-3-3 0-.462.113-.894.3-1.285L6 6l4.714 3.301A2.973 2.973 0 0112 9c1.654 0 3 1.346 3 3s-1.346 3-3 3z" />
-                        </svg>
-                        <span className="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Dashboard</span>
-                      </div>
-                    </div>
-                  </li>
-                  {/* add property */}
-                  <li className="px-3 py-2 rounded-sm mb-0.5 last:mb-0">
-                    <div className={`block text-gray-200 hover:text-white truncate transition duration-150`}>
-                      <div className="flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V8z" clipRule="evenodd" />
-                        </svg>                      
-                        <span className="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Add Property</span>
-                      </div>
-                    </div>
-
-                  </li>
-                </ul>
-              </div>
+            <div>
+              <h3 className="text-xs uppercase text-gray-500 font-semibold pl-3">
+              <span className="hidden lg:block lg:sidebar-expanded:hidden 2xl:hidden text-center w-6" aria-hidden="true">•••</span>
+              <span className="lg:hidden lg:sidebar-expanded:block 2xl:block">Pages</span>
+              </h3>
+            </div>
+            <Link href="/" >
+              <a className='flex text-gray-300 pl-3'>
+                <HomeIcon className='h-6 w-6'/>
+                <p className='pl-2 lg:hidden lg:sidebar-expanded:block 2xl:block'>Dashboard</p> 
+              </a>            
+            </Link>
+            <Link href="/viewProperties">
+              <a className='flex text-gray-300 pl-3'>
+                <ViewBoardsIcon className='h-6 w-6'/>
+                <p className='pl-2 lg:hidden lg:sidebar-expanded:block 2xl:block'>View Properties</p>
+              </a>
+            </Link>
+            <Link href="/addProperties">
+              <a className='flex text-gray-300 pl-3'>
+                <DocumentAddIcon className='h-6 w-6'/>
+                <p className='pl-2 lg:hidden lg:sidebar-expanded:block 2xl:block'>Add Property</p>
+              </a>
+            </Link>  
           </div>
 
           <div className="pt-3 hidden lg:inline-flex 2xl:hidden justify-end mt-auto">
@@ -94,9 +88,7 @@ function sidebar({
             </div>
           </div>
 
-       </div>
-
-      
+       </div>    
     </div>
   )
 }
