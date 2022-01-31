@@ -1,7 +1,10 @@
 import { useState } from 'react'
-import { db } from "../firebase"
-import { addDoc, collection } from "firebase/firestore"
+import { db, storage } from "../firebase"
+import { addDoc, collection, updateDoc, doc, setDoc } from "firebase/firestore"
 import ListingType from '../components/ListingType'
+import Dropzone from '../components/Dropzone'
+import { ref, getDownloadURL, uploadString } from 'firebase/storage'
+import { getSession } from 'next-auth/react';
 
 
 function addProperties() {
@@ -20,12 +23,41 @@ function addProperties() {
         state : '',
         address : '',
         landmark : '',
+        meetingRoom: [],
+        trainingRoom: [],
+        privateOffice: [],
     })
-    const [images, setImages] = useState([])
+
+    const [imageArray, setImageArray] = useState([])
+
+    const [urls, SetUrls] = useState([])
+    
+    const [coworkingSpace, setCoworkingSpace] = useState({
+        seater: '',
+        price: '',
+    });
+    const [virtualOffice, setVirtualOffice] = useState({
+        available: '',
+        price: '',
+    })
+
+    // const [loading, setLoading] = useState(false)
     
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await addDoc(collection(db, "property"), values)
+
+        const docRef = await addDoc(collection(db, "property"), values)
+
+         imageArray.image.map(async (img) => {
+             const imageRef = ref(storage, `property/${docRef.id}/${Date.now()}`);
+             await uploadString(imageRef, img, "data_url").then( async snapshot => {
+                 const downloadUrl = await getDownloadURL(imageRef);
+                 SetUrls(urls => [...urls, downloadUrl])
+                 await setDoc(doc(db, `property/${docRef.id}/photos`, `${Date.now()}`), {
+                    image: downloadUrl
+                })
+            })
+        })
     }
 
     const handleChange = (e) => {
@@ -34,15 +66,18 @@ function addProperties() {
         setValues({...values, [name] : value})
     }
 
-    // const handleImage = (e) => {
-    //     if(e.target.files){
-    //         const fileArray = Array.from(e.target.files).map((file)=> URL.createObjectURL(file))
-    //         setImages((prev)=> prev.concat(fileArray))
-    //         console.log(fileArray)
-    //         Array.from(e.target.file).map((file)=> URL.revokeObjectURL(file))
-    //     }
+    const handleCoworking = (e) => {
+        const name = e.target.name;
+        const value = e.target.value;
+        setCoworkingSpace({...coworkingSpace, [name] : value})
+    }
 
-    //}
+    const handleVirtual = (e) => {
+        const name = e.target.name;
+        const value = e.target.value;
+        setVirtualOffice({...virtualOffice, [name] : value})
+    }
+
     return (
         <div className="p-2 md:p-5 bg-gray-50">
             <form className="grid grid-cols-6 gap-6" onSubmit={handleSubmit}>
@@ -131,11 +166,11 @@ function addProperties() {
                     <h1 className='heading'>Coworking Space</h1>
                     <div className="flex items-center justify-between">
                         <label className="labelcss" htmlFor="seater">dedicated seats</label>
-                        <input className="inputcss w-1/2" id="seater" />
+                        <input className="inputcss w-1/2" name='seater' onChange={handleCoworking}  id="seater" />
                     </div>
                     <div className="flex items-center justify-between">
                         <label className="labelcss" htmlFor="price">price/month/person</label>
-                        <input className="inputcss w-1/2" id="price" />
+                        <input className="inputcss w-1/2" name='price' onChange={handleCoworking} id="price" />
                     </div>   
                 </div>
 
@@ -143,53 +178,56 @@ function addProperties() {
                     <h1 className='heading'>Virtual Office</h1>
                     <div className="flex items-center justify-between">
                         <label className="labelcss" htmlFor="seater">Available</label>
-                        <input className="inputcss w-1/2" id="seater" />
+                        <input className="inputcss w-1/2" name='available' onChange={handleVirtual} id="seater" />
                     </div>
                     <div className="flex items-center justify-between">
                         <label className="labelcss" htmlFor="price">price/year</label>
-                        <input className="inputcss w-1/2" id="price" />
+                        <input className="inputcss w-1/2" id="price" name='price' onChange={handleVirtual} />
                     </div>   
                 </div>
 
                 <div className='col-span-6 bg-gray-100 border border-gray-200 p-5 rounded-md'>
-                    <ListingType type={"Meeting room"}/>
+                    <ListingType type={"Meeting room"} values={values} setValues={setValues} typeCamel={"meetingRoom"}/>
                 </div>
                 <div className='col-span-6 bg-gray-100 border border-gray-200 p-5 rounded-md'>
-                    <ListingType type={"Training room"}/>
+                    <ListingType type={"Training room"} values={values} setValues={setValues} typeCamel={"trainingRoom"}/>
                 </div>
                 <div className='col-span-6 bg-gray-100 border border-gray-200 p-5 rounded-md'>
-                    <ListingType type={"Private Office"}/>
+                    <ListingType type={"Private Office"} values={values} setValues={setValues} typeCamel={"privateOffice"}/>
                 </div>
-
-                
 
                 <div className='col-span-6'>
-                    <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                      <div className="space-y-1 text-center">
-                        <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                          <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                        <div className="flex text-sm text-gray-600">
-                          <label htmlFor="file-upload" className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
-                            <span>Upload a file</span>
-                            <input id="file-upload" multiple name="file-upload" type="file" className="sr-only"/>
-                          </label>
-                          <p className="pl-1">or drag and drop</p>
-                        </div>
-                      </div>
-                    </div>         
+                    <Dropzone values={imageArray} setValues={setImageArray} />
                 </div>
+
                 
-                <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                    <button type="submit" className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                      Save
+                <div className="col-span-6">
+                    <button type='submit' className="inline-flex w-full justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                     {/* {loading ? "Saving to database" : "Save"} */} Save
                     </button>
                 </div>
                                
 
-            </form>            
+            </form>         
         </div>
     )
 }
 
 export default addProperties
+
+export async function getServerSideProps(ctx) {
+  const session = await getSession(ctx)
+  if (!session) {
+    return {
+     redirect: {
+     destination: 'api/auth/signin', //redirect user to homepage
+     permanent: false,
+     }
+    }
+   }
+  return {
+    props: {
+      user: session.user,
+    },
+  }
+}

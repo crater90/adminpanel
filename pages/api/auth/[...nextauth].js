@@ -1,10 +1,6 @@
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials";
 
-const isAdmin = (credentials) =>
-  credentials.email === process.env.NEXTAUTH_USER &&
-  credentials.password === process.env.NEXTAUTH_PASSWORD;
-
 export default NextAuth({
   // Configure one or more authentication providers
   providers: [
@@ -21,8 +17,8 @@ export default NextAuth({
     },
     async authorize(credentials, req) {
       // Add logic here to look up the user from the credentials supplied
-      if (isAdmin(credentials)) {
-        const user = { id: 1, name: "admin", email: "jsmith@example.com" }
+      if (credentials.username === process.env.NEXTAUTH_USER && credentials.password === process.env.NEXTAUTH_PASSWORD) {
+        const user = { id: 1, username: "admin", email: "imran@example.com" }
         return Promise.resolve(user);
       } else {
         // If you return null or false then the credentials will be rejected

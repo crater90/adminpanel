@@ -1,34 +1,21 @@
 import Head from 'next/head'
-import { useState } from 'react';
-import Header from '../components/Header';
-import Sidebar from '../components/Sidebar';
 import Banner from '../components/Banner';
-import { useSession, signIn, signOut } from 'next-auth/react';
+import { signIn, signOut, getSession } from 'next-auth/react';
 
 export default function Home() {
-  const {data: session} = useSession();
-  //const [sidebarOpen, setSidebarOpen] = useState(false);
   return (
     <div className="">
       <Head>
         <title>Dashboard</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {/* Sidebar */}
-      {/* <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} /> */}
-
-      {/* Content area */}
-      {/* <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden"> */}
-
-        {/* Header */}
-        {/* <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/> */}
         <main>
           <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
             {/* Bannner */}
             <Banner/>
               <div className="grid grid-cols-3 gap-6">
                 <div className= "bg-gray-500 p-2">
-                  1
+                  <button onClick={signOut} className='btn'>click to signout</button>
                 </div>
                 <div className= "bg-gray-500 p-2">
                   2
@@ -42,4 +29,21 @@ export default function Home() {
       {/* </div> */}
     </div>
   )
+}
+
+export async function getServerSideProps(ctx) {
+  const session = await getSession(ctx)
+  if (!session) {
+    return {
+     redirect: {
+     destination: 'api/auth/signin', //redirect user to homepage
+     permanent: false,
+     }
+    }
+   }
+  return {
+    props: {
+      user: session.user,
+    },
+  }
 }
