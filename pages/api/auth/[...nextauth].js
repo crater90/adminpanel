@@ -9,6 +9,7 @@ export default NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
   ],
+  secret: process.env.SECRET,
   callbacks: {
     async signIn({ account, profile }) {
       if (account.provider === "google") {
