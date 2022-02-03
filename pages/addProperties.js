@@ -4,7 +4,8 @@ import { addDoc, collection, updateDoc, doc, setDoc } from "firebase/firestore"
 import ListingType from '../components/ListingType'
 import Dropzone from '../components/Dropzone'
 import { ref, getDownloadURL, uploadString } from 'firebase/storage'
-import { getSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react'
+import Login from '../components/Login'
 
 
 function addProperties() {
@@ -76,6 +77,10 @@ function addProperties() {
         const name = e.target.name;
         const value = e.target.value;
         setVirtualOffice({...virtualOffice, [name] : value})
+    }
+    const {data: session} = useSession();
+    if(!session){
+        return <Login/>
     }
 
     return (
@@ -214,20 +219,3 @@ function addProperties() {
 }
 
 export default addProperties
-
-export async function getServerSideProps(ctx) {
-  const session = await getSession(ctx)
-  if (!session) {
-    return {
-     redirect: {
-     destination: 'api/auth/signin', //redirect user to homepage
-     permanent: false,
-     }
-    }
-   }
-  return {
-    props: {
-      user: session.user,
-    },
-  }
-}

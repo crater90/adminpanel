@@ -1,12 +1,16 @@
-import { SearchIcon, BellIcon, UserCircleIcon } from "@heroicons/react/outline"
+import { SearchIcon, BellIcon, UserIcon } from "@heroicons/react/outline"
+import { signOut, useSession } from "next-auth/react";
+
 function Header({
   sidebarOpen,
   setSidebarOpen
 }) {
+
+  const {data: session} = useSession();
     return (
     <header className="sticky top-0 bg-white border-b border-gray-200 z-30">
       <div className="px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 -mb-px">
+        <div className="flex items-center justify-between h-14 -mb-px">
 
           {/* Header: Left side */}
           <div className="flex">
@@ -29,14 +33,20 @@ function Header({
           </div>
 
           {/* Header: Right side */}
-          <div className="flex items-center">
-            <SearchIcon className="h-6 w-6"/>
-            <hr className="w-px h-6 bg-gray-200 mx-3" />
-            <BellIcon className="h-6 w-6"/>
-            
-            {/*  Divider */}
-            <hr className="w-px h-6 bg-gray-200 mx-3" />
-            <UserCircleIcon className="h-6 w-6"/>
+          <div className="flex items-center justify-end space-x-4">
+            { session ? (
+              <>
+                <SearchIcon className="h-6"/>
+                <BellIcon className="h-6"/>
+                <img onClick={signOut} className="h-10 rounded-full cursor-pointer" src={session?.user?.image} alt="profile pic" />
+              </>
+            ) : (
+              <>
+                <SearchIcon className="h-6"/>
+                <BellIcon className="h-6"/>
+                <UserIcon className="h-6"/>
+              </>
+            )}
           </div>
         </div>
       </div>

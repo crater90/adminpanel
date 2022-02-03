@@ -1,8 +1,13 @@
 import Head from 'next/head'
 import Banner from '../components/Banner';
-import { signIn, signOut, getSession } from 'next-auth/react';
+import { signIn, signOut, useSession } from 'next-auth/react';
+import Login from '../components/Login';
 
 export default function Home() {
+  const {data: session} = useSession();
+ if(!session){
+   return <Login/>
+ }
   return (
     <div className="">
       <Head>
@@ -15,7 +20,7 @@ export default function Home() {
             <Banner/>
               <div className="grid grid-cols-3 gap-6">
                 <div className= "bg-gray-500 p-2">
-                  <button onClick={signOut} className='btn'>click to signout</button>
+                  1
                 </div>
                 <div className= "bg-gray-500 p-2">
                   2
@@ -23,7 +28,7 @@ export default function Home() {
                 <div className= "bg-gray-500 p-2">
                   3
                 </div>
-              </div>          
+              </div>
           </div>
         </main>
       {/* </div> */}
@@ -31,19 +36,19 @@ export default function Home() {
   )
 }
 
-export async function getServerSideProps(ctx) {
-  const session = await getSession(ctx)
-  if (!session) {
-    return {
-     redirect: {
-     destination: 'api/auth/signin', //redirect user to homepage
-     permanent: false,
-     }
-    }
-   }
-  return {
-    props: {
-      user: session.user,
-    },
-  }
-}
+//  export async function getServerSideProps(ctx) {
+//    const session = await getSession(ctx)
+//    if (!session) {
+//      return {
+//       redirect: {
+//       destination: 'api/auth/signin', //redirect user to homepage
+//       permanent: false,
+//       }
+//      }
+//     }
+//    return {
+//      props: {
+//        user: session.user,
+//      },
+//    }
+//  }
