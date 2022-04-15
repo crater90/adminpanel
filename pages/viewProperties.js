@@ -3,96 +3,74 @@ import { onSnapshot, collection, orderBy, query } from "firebase/firestore"
 import { db } from "../firebase";
 import { useSession } from 'next-auth/react'
 import Login from "../components/Login";
+import Property from "../components/Property";
 
 function viewProperties() {
-    const [properties, setProperties] = useState([]);
-    useEffect(
-        () =>
-          onSnapshot(
-            query(collection(db, "property")),
-            (snapshot) => {
-              setProperties(snapshot.docs);
+  const [properties, setProperties] = useState([]);
+  useEffect(
+    () =>
+      onSnapshot(
+        query(collection(db, "property")),
+        (snapshot) => {
+          setProperties(snapshot.docs.map((doc) => {
+            return {
+              id: doc.id,
+              data: doc.data(),
             }
-          ),
-          [db]
-        );
-    console.log(properties);
-    const {data: session} = useSession();
-    if(!session){
-        return <Login/>
-    }
-    return (
-      <div className="grid grid-cols-6">
-    <div className="col-span-4 col-start-2 bg-white shadow-lg rounded-sm border border-slate-200">
-      <header className="px-5 py-4 border-b border-slate-100">
-        <h2 className="font-semibold text-slate-800">Properties</h2>
-      </header>
-      <div className="p-3">
-
-        {/* Table */}
-        <div className="overflow-x-auto">
-          <table className="table-auto w-full">
-            {/* Table header */}
-            <thead className="text-xs font-semibold uppercase text-slate-400 bg-slate-50">
-              <tr>
-                <th className="p-2 whitespace-nowrap">
-                  <div className="font-semibold text-left">UID</div>
-                </th>
-                <th className="p-2 whitespace-nowrap">
-                  <div className="font-semibold text-left">Venue Name</div>
-                </th>
-                <th className="p-2 whitespace-nowrap">
-                  <div className="font-semibold text-left">Address</div>
-                </th>
-                <th className="p-2 whitespace-nowrap">
-                  <div className="font-semibold text-center">Manager's name</div>
-                </th>
-                <th className="p-2 whitespace-nowrap">
-                  <div className="font-semibold text-center">Phone no</div>
-                </th>
-              </tr>
-            </thead>
-            {/* Table body */}
-            <tbody className="text-sm divide-y divide-slate-100">
-              {
-                properties.map(property => {
-                  return (
-                    <tr key={property.id}>
-                      <td className="p-2 whitespace-nowrap">
-                        <div className="text-left">{property.data().uniqueId}</div>
-                      </td>
-                      <td className="p-2 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className="font-medium text-slate-800">{property.data().venueName}</div>
-                        </div>
-                      </td>
-                      <td className="p-2 whitespace-nowrap">
-                        <div className="text-left">{property.data().address}</div>
-                      </td>
-                      <td className="p-2 whitespace-nowrap">
-                        <div className="text-left font-medium text-green-500">{property.data().name}</div>
-                      </td>
-                      <td className="p-2 whitespace-nowrap">
-                        <div className="text-lg text-center">{property.data().phone}</div>
-                      </td>
-                    </tr>
-                  )
-                })
-              }
-            </tbody>
-          </table>
-
-        </div>
-        {
-          properties.map((property) => {
-            console.log(property.name);
-          })
+          }));
         }
-
+      ),
+    [db]
+  );
+  console.log(properties);
+  const { data: session } = useSession();
+  if (!session) {
+    return <Login />
+  }
+  return (
+    <div className="grid grid-cols-6 p-5">
+      <h1 className='pb-5 font-bold text-gray-700 font-Montserrat text-3xl'>Properties</h1>
+      <div className="col-span-6 bg-white shadow-lg rounded-lg border border-gray-200">
+        <div className="p-3">
+          {/* Table */}
+          <div className="overflow-x-auto">
+            <table className="table-auto w-full">
+              {/* Table header */}
+              <thead className="text-sm font-Roboto tracking-wider uppercase text-gray-400 bg-slate-50 rounded-sm">
+                <tr>
+                  <th className="p-2 whitespace-nowrap">
+                    <div className="font-semibold text-left">UID</div>
+                  </th>
+                  <th className="p-2 whitespace-nowrap">
+                    <div className="font-semibold text-left">Venue Name</div>
+                  </th>
+                  <th className="p-2 whitespace-nowrap">
+                    <div className="font-semibold text-left">City</div>
+                  </th>
+                  <th className="p-2 whitespace-nowrap">
+                    <div className="font-semibold text-left">Manager's name</div>
+                  </th>
+                  <th className="p-2 whitespace-nowrap">
+                    <div className="font-semibold text-center">Phone no</div>
+                  </th>
+                </tr>
+              </thead>
+              {/* Table body */}
+              <tbody className="text-sm divide-y divide-slate-100">
+                {
+                  properties.map(property => {
+                    return (
+                      <Property key={property.id} id={property.id} data={property.data} />
+                    )
+                  })
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
-    </div>
-    )
+  )
 }
 
 export default viewProperties
