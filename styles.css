@@ -1,18 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Roboto:wght@400;500;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer components {
   .labelcss {
-    @apply block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2;
+    @apply block text-gray-700 text-sm font-bold mb-2 font-Roboto;
   }
 
   .inputcss {
-    @apply appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white;
+    @apply shadow appearance-none block w-full bg-gray-100 text-gray-700 border rounded-lg py-2 px-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500;
 
   }
 
   .heading {
-    @apply uppercase text-gray-700 font-extrabold tracking-wider
+    @apply mb-3 font-Montserrat text-xl font-bold text-gray-700
   }
 }
