@@ -1,6 +1,6 @@
 
 import { db, storage } from "../firebase"
-import { addDoc, collection, updateDoc, doc, arrayUnion } from "firebase/firestore"
+import { addDoc, collection, updateDoc, doc, arrayUnion, setDoc } from "firebase/firestore"
 import Dropzone from '../components/Dropzone'
 import { ref, getDownloadURL, uploadString } from 'firebase/storage'
 import { useSession } from 'next-auth/react'
@@ -157,7 +157,10 @@ function addProperties() {
     return (
         <div className="p-2 md:p-5 bg-gray-50">
             <Formik initialValues={initialForm} onSubmit={async (values, { resetForm }) => {
-                const docRef = await addDoc(collection(db, "property"), values)
+                const docRef = await setDoc(doc(db, "property", `${values.uniqueId}`), values)
+                await updateDoc(doc(db, "micromarket", values.address.city), {
+                    available: arrayUnion(values.address.micromarket)
+                })
 
                 await Promise.all(imageArray.map(async (img) => {
                     const imageRef = ref(storage, `property/${docRef.id}/${Date.now()}`);
