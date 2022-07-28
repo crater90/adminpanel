@@ -174,7 +174,6 @@ function addProperties() {
                 }))
                 toast.success('Form uploaded Successfully');
                 setImageArray([]);
-                console.log(docRef.id)
                 resetForm();
             }}>
                 {({ values }) => (
