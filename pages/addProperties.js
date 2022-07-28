@@ -157,16 +157,17 @@ function addProperties() {
     return (
         <div className="p-2 md:p-5 bg-gray-50">
             <Formik initialValues={initialForm} onSubmit={async (values, { resetForm }) => {
-                const docRef = await setDoc(doc(db, "property", `${values.uniqueId}`), values)
+                const docId = values.uniqueId;
+                await setDoc(doc(db, "property", `${docId}`), values)
                 await updateDoc(doc(db, "micromarket", values.address.city), {
                     available: arrayUnion(values.address.micromarket)
                 })
 
                 await Promise.all(imageArray.map(async (img) => {
-                    const imageRef = ref(storage, `property/${docRef.id}/${Date.now()}`);
+                    const imageRef = ref(storage, `property/${docId}/${Date.now()}`);
                     await uploadString(imageRef, img, "data_url").then(async snapshot => {
                         const downloadUrl = await getDownloadURL(imageRef);
-                        await updateDoc(doc(db, 'property', docRef.id), {
+                        await updateDoc(doc(db, 'property', docId), {
                             photos: arrayUnion(downloadUrl)
                         })
                     })
