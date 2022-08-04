@@ -149,6 +149,56 @@ function addProperties() {
         'West Bengal'
     ]
 
+    const secondaryOptions = [
+        { value: 'new-delhi', label: 'New Delhi' },
+        { value: 'vishakhapatnam', label: 'Vishakhapatnam' },
+        { value: 'jodhpur', label: 'Jodhpur' },
+        { value: 'mumbai', label: 'Mumbai' },
+        { value: 'noida', label: 'Noida' },
+        { value: 'bangalore', label: 'Bangalore' },
+        { value: 'chennai', label: 'Chennai' },
+        { value: 'hyderabad', label: 'Hyderabad' },
+        { value: 'indore', label: 'Indore' },
+        { value: 'kanpur', label: 'Kanpur' },
+        { value: 'allahabad', label: 'Allahabad' },
+        { value: 'jamshedpur', label: 'Jamshedpur' },
+        { value: 'nasik', label: 'Nasik' },
+        { value: 'bir', label: 'Bir' },
+        { value: 'mysuru', label: 'Mysuru' },
+        { value: 'vijaywada', label: 'Vijaywada' },
+        { value: 'mangalore', label: 'Mangalore' },
+        { value: 'guwahati', label: 'Guwahati' },
+        { value: 'lucknow', label: 'Lucknow' },
+        { value: 'dehradun', label: 'Dehradun' },
+        { value: 'nagpur', label: 'Nagpur' },
+        { value: 'coimbatore', label: 'Coimbatore' },
+        { value: 'bhopal', label: 'Bhopal' },
+        { value: 'bhubaneswar', label: 'Bhubaneswar' },
+        { value: 'trivandrum', label: 'Trivandrum' },
+        { value: 'udaipur', label: 'Udaipur' },
+        { value: 'dharmshala', label: 'Dharmshala' },
+        { value: 'ranchi', label: 'Ranchi' },
+        { value: 'raipur', label: 'Raipur' },
+        { value: 'patna', label: 'Patna' },
+        { value: 'cochin', label: 'Cochin' },
+        { value: 'jabalpur', label: 'Jabalpur' },
+        { value: 'pondicherry', label: 'Pondicherry' },
+        { value: 'agra', label: 'Agra' },
+        { value: 'jammu', label: 'Jammu' },
+        { value: 'kota', label: 'Kota' },
+        { value: 'meerut', label: 'Meerut' },
+        { value: 'goa', label: 'Goa' },
+        { value: 'ahmedabad', label: 'Ahmedabad' },
+        { value: 'baroda', label: 'Baroda' },
+        { value: 'surat', label: 'Surat' },
+        { value: 'chandigarh', label: 'Chandigarh' },
+        { value: 'gurgaon', label: 'Gurgaon' },
+        { value: 'pune', label: 'Pune' },
+        { value: 'faridabad', label: 'Faridabad' },
+        { value: 'kolkata', label: 'Kolkata' },
+        { value: 'jaipur', label: 'Jaipur' },
+    ]
+
     const { data: session } = useSession();
     if (!session) {
         return <Login />
@@ -159,9 +209,6 @@ function addProperties() {
             <Formik initialValues={initialForm} onSubmit={async (values, { resetForm }) => {
                 const docId = values.uniqueId;
                 await setDoc(doc(db, "property", `${docId}`), values)
-                await updateDoc(doc(db, "micromarket", values.address.city), {
-                    available: arrayUnion(values.address.micromarket)
-                })
 
                 await Promise.all(imageArray.map(async (img) => {
                     const imageRef = ref(storage, `property/${docId}/${Date.now()}`);
@@ -186,8 +233,8 @@ function addProperties() {
                                 <label className="labelcss" htmlFor="type">Venue Type</label>
                                 <Field as='select' className="inputcss" name='type' id="type" >
                                     <option defaultValue={null} hidden>Choose Venue Type</option>
-                                    <option value={1}>Commercial</option>
                                     <option value={0}>Coworking Space</option>
+                                    <option value={1}>Commercial</option>
                                 </Field>
                                 <div class="pointer-events-none absolute bottom-2.5 right-0 flex items-center px-2 text-gray-700">
                                     <ChevronDownIcon className='h-4 w-4' />
@@ -280,12 +327,12 @@ function addProperties() {
                                 <label className="labelcss" htmlFor="city">City</label>
                                 <Field as='select' className="inputcss" name='address.city' id="city" >
                                     <option defaultValue={0} hidden>Choose city</option>
-                                    <option value="New Delhi">New Delhi</option>
-                                    <option value="Pune">Pune</option>
-                                    <option value="Hyderabad">Hyderabad</option>
-                                    <option value='Lucknow'>Lucknow</option>
-                                    <option value='Bangalore'>Bangalore</option>
-                                    <option value='Mumbai'>Mumbai</option>
+                                    {secondaryOptions.map((item) => {
+                                        return (
+                                            <option key={item.value} value={item.value}>{item.label}</option>
+                                        )
+                                    })}
+
                                 </Field>
                                 <div class="pointer-events-none absolute bottom-2.5 right-0 flex items-center px-2 text-gray-700">
                                     <ChevronDownIcon className='h-4 w-4' />
