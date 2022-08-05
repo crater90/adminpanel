@@ -329,7 +329,7 @@ function addProperties() {
                                     <option defaultValue={0} hidden>Choose city</option>
                                     {secondaryOptions.map((item) => {
                                         return (
-                                            <option key={item.value} value={item.value}>{item.label}</option>
+                                            <option key={item.value} value={item.label}>{item.label}</option>
                                         )
                                     })}
 
