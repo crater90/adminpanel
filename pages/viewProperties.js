@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { onSnapshot, collection, orderBy, query } from "firebase/firestore"
+import { onSnapshot, collection, query } from "firebase/firestore"
 import { db } from "../firebase";
 import { useSession } from 'next-auth/react'
 import Login from "../components/Login";
@@ -22,7 +22,6 @@ function viewProperties() {
       ),
     [db]
   );
-  console.log(properties);
   const { data: session } = useSession();
   if (!session) {
     return <Login />

@@ -1,8 +1,22 @@
+import { TrashIcon } from '@heroicons/react/outline'
 import React from 'react'
 import { useState } from 'react'
+import { toast } from 'react-toastify'
+import { deleteDoc, doc } from 'firebase/firestore'
+import { db } from "../firebase"
 
-function LeadsDetails({ name, phone, email, location, query }) {
+function LeadsDetails({ id, name, phone, email, location, query }) {
     const [open, setOpen] = useState(false)
+
+    const deleteLeads = async (e) => {
+        try {
+            await deleteDoc(doc(db, "leads", id))
+            toast.success('Lead deleted successfully')
+        } catch (err) {
+            toast.error('Action failed. Please try again.')
+            console.log(err)
+        }
+    }
     return (
         <>
             <tr className={`${open ? '' : 'border-b border-gray-100'} last:!border-0 font-Roboto`}>
@@ -17,6 +31,9 @@ function LeadsDetails({ name, phone, email, location, query }) {
                 </td>
                 <td className="p-2">
                     <div className="text-center">{phone}</div>
+                </td>
+                <td className="p-2">
+                    <TrashIcon onClick={deleteLeads} className='h-6 w-6 text-red-400 cursor-pointer' />
                 </td>
             </tr>
             {

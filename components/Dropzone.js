@@ -40,7 +40,7 @@ function Dropzone({ refresh }) {
                         {
                             images.map((img, index) => {
                                 return (
-                                    <div className=''>
+                                    <div key={index} className=''>
                                         <img className='h-80 w-80' src={img} alt='preview' key={index} />
                                     </div>
                                 )
