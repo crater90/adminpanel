@@ -57,7 +57,7 @@ function leads() {
                                 {
                                     data.map((lead) => {
                                         return (
-                                            <LeadsDetails key={lead.id} name={lead.data.name} phone={lead.data.phone} email={lead.data.email} location={lead.data.location} query={lead.data.query} />
+                                            <LeadsDetails key={lead.id} id={lead.id} name={lead.data.name} phone={lead.data.phone} email={lead.data.email} location={lead.data.location} query={lead.data.query} />
                                         )
                                     })
                                 }

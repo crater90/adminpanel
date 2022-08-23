@@ -1,13 +1,15 @@
 import React from 'react'
 import { useState } from 'react'
-import { TrashIcon } from '@heroicons/react/outline'
+import { TrashIcon, PencilAltIcon } from '@heroicons/react/outline'
 import { deleteDoc, doc } from 'firebase/firestore'
 import { db } from "../firebase"
 import { toast } from 'react-toastify'
+import Link from 'next/link'
 
 function Property({ id, data }) {
 
     const [show, setShow] = useState(false);
+
     const deleteProperty = async (e) => {
         try {
             await deleteDoc(doc(db, "property", id))
@@ -37,7 +39,15 @@ function Property({ id, data }) {
                     <div className="text-lg text-center">{data.phone}</div>
                 </td>
                 <td className="p-2 whitespace-nowrap">
-                    <TrashIcon onClick={deleteProperty} className='h-6 w-6 text-red-500 cursor-pointer' />
+                    <Link href={{ pathname: `editProperties`, query: { id: data.uniqueId } }}>
+                        <div>
+                            <PencilAltIcon className='h-6 w-6 text-blue-400 cursor-pointer' />
+                        </div>
+
+                    </Link>
+                </td>
+                <td className="p-2 whitespace-nowrap">
+                    <TrashIcon onClick={deleteProperty} className='h-6 w-6 text-red-400 cursor-pointer' />
                 </td>
             </tr>
             {
